@@ -1,5 +1,3 @@
-import "./components.css";
-
 const Button = ({ children, onClick, type = "button", isCancell = false }) => {
   return (
     <button
