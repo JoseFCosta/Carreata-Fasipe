@@ -1,80 +1,3 @@
-// import { useNavigate } from "react-router-dom";
-// import {
-//   Button,
-//   Input,
-//   InputDropDown,
-//   LargeButton,
-//   PhotoButton,
-// } from "./components";
-// import { FaCamera } from "react-icons/fa";
-
-// export default function Form() {
-//   const navigate = useNavigate();
-
-//   const handleNavigate = (path) => {
-//     navigate(path);
-//   };
-
-//   const handlePhotoChange = (file, base64) => {
-//     console.log("Foto capturada:", file, base64);
-//   };
-
-//   return (
-//     <>
-//       <h2>Lista de chamda</h2>
-
-//       <Input label="Nome Completo" placeholder="Ex: João Da Silva Neto" />
-//       <Input label="Registro de aluno (RA)" placeholder="Ex: 103929" />
-
-//       <InputDropDown
-//         label="Curso"
-//         options={["Ads", "Direito", "Odonto", "Biomedicina"]}
-//         placeholder="Selecione seu curso"
-//       />
-
-//       <InputDropDown
-//         label="Equipe"
-//         options={[
-//           "Equipe Ads",
-//           "Equipe Direito",
-//           "Equipe Odonto",
-//           "Equipe Biomedicina",
-//         ]}
-//         placeholder="Selecione sua equipe"
-//       />
-
-//       <InputDropDown
-//         label="Veiculo"
-//         options={["Carro", "Moto", "Outro"]}
-//         placeholder="Selecione o seu tipo veiculo"
-//       />
-
-//       <LargeButton
-//         label="Foto do veículo"
-//         description="A foto deve mostrar o máximo possível do veículo e a placa"
-//       >
-//         <PhotoButton
-//           text="Retirar foto"
-//           icon={<FaCamera />}
-//           onPhotoChange={handlePhotoChange}
-//         />
-//       </LargeButton>
-//       <br />
-//       <br />
-//       <div className="button-container">
-//         <Button
-//           children={"Cancelar"}
-//           isCancell={true}
-//           onClick={() => handleNavigate("/")}
-//         />
-//         <Button
-//           children={"Confirmar"}
-//           onClick={() => handleNavigate("/success")}
-//         />
-//       </div>
-//     </>
-//   );
-// }
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -89,61 +12,107 @@ import { useState } from "react";
 export default function Form() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
-  const [ra, setRa] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [curso, setCurso] = useState("");
   const [equipe, setEquipe] = useState("");
   const [veiculo, setVeiculo] = useState("");
+  const [placa, setPlaca] = useState("");
   const [fotoBase64, setFotoBase64] = useState(null);
+
+  const equipList = [
+    "Aguia Real",
+    "Digito Zero",
+    "Suprema Corte",
+    "Os imunes",
+    "Os Parasitas",
+    "Freudguesa Gourmet",
+    "Forset",
+    "Mentes Brilhantes",
+    "Guardiões da Justiça",
+    "Odonto Elite",
+    "Enferbrasa",
+    "Asclepion",
+    "Justiceiros",
+    "Phoenix",
+    "Tropa do Baguncinha",
+    "Risotril",
+    "Glow & Sabor",
+  ];
+
+  const courseList = [
+    "Análise e Desenvolvimento de Sistemas",
+    "Biomedicina",
+    "Ciências Contábeis",
+    "Direito",
+    "Enfermagem",
+    "Estética e Cosmética",
+    "Fisioterapia",
+    "Nutrição",
+    "Odontologia",
+    "Psicologia",
+  ];
+
+  const vehicleTypes = [
+    "Bicicleta",
+    "Carro",
+    "Moto",
+    "Camionete",
+    "Van/Microônibus",
+    "Outros",
+  ];
 
   const handlePhotoChange = (file, base64) => {
     setFotoBase64(base64);
   };
 
   const handleConfirm = () => {
-    const dados = { nome, ra, curso, equipe, veiculo, fotoBase64 };
+    const dados = { nome, telefone, curso, equipe, veiculo, placa, fotoBase64 };
     localStorage.setItem("formData", JSON.stringify(dados));
     navigate("/success");
   };
 
   return (
     <>
-      <h2>Lista de chamada</h2>
+      <h2>Registro de veiculo</h2>
 
       <Input
         label="Nome Completo"
         placeholder="Ex: João Da Silva Neto"
         onChange={(e) => setNome(e.target.value)}
       />
+
       <Input
-        label="Registro de aluno (RA)"
-        placeholder="Ex: 103929"
-        onChange={(e) => setRa(e.target.value)}
+        label="Telefone"
+        placeholder="Ex: 65 9 0000-0000"
+        onChange={(e) => setTelefone(e.target.value)}
       />
 
       <InputDropDown
         label="Curso"
-        options={["Ads", "Direito", "Odonto", "Biomedicina"]}
+        options={courseList}
         placeholder="Selecione seu curso"
         onChange={(e) => setCurso(e.target.value)}
       />
 
       <InputDropDown
         label="Equipe"
-        options={[
-          "Equipe Ads",
-          "Equipe Direito",
-          "Equipe Odonto",
-          "Equipe Biomedicina",
-        ]}
+        options={equipList}
         placeholder="Selecione sua equipe"
         onChange={(e) => setEquipe(e.target.value)}
       />
 
       <InputDropDown
         label="Veiculo"
-        options={["Carro", "Moto", "Outro"]}
+        options={vehicleTypes}
         placeholder="Selecione o seu tipo veiculo"
         onChange={(e) => setVeiculo(e.target.value)}
+      />
+
+      <Input
+        label="Placa do veiculo"
+        placeholder="Ex: ABC1D23"
+        description="(Necessário apenas se o seu veiculo possuir)"
+        onChange={(e) => setPlaca(e.target.value)}
       />
 
       <LargeButton

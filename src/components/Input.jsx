@@ -5,10 +5,12 @@ const Input = ({
   showCheckbox = false,
   checkboxLabel = "",
   onCheckboxChange,
+  description = null,
 }) => {
   return (
     <div className="input-container">
       {label && <label className="label">{label}</label>}
+      <p className="large-button-description">{description}</p>
 
       <input
         className="input"

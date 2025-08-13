@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
@@ -11,7 +10,7 @@ import ShowComponents from "./ShowComponents";
 export default function App() {
   return (
     <>
-      <Router>
+      <Router basename="/carreata">
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />

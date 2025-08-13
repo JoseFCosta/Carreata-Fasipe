@@ -1,42 +1,3 @@
-// import { useNavigate } from "react-router-dom";
-// import { CodeButton, LargeButton, PhotoButton } from "./components/index";
-// import { FaCamera, FaCopy, FaHome } from "react-icons/fa";
-
-// export default function Success() {
-//   const navigate = useNavigate();
-
-//   const handleNavigate = (path) => {
-//     navigate(path);
-//   };
-//   return (
-//     <>
-//       <h3>Registro salvo com sucesso!</h3>
-//       <LargeButton label="Código de acesso" description="Copie o código">
-//         <CodeButton
-//           text="Copiar código"
-//           icon={<FaCopy />}
-//           code="KJGD9124JIOA-213U12AS"
-//         />
-//       </LargeButton>
-//       <LargeButton label="Foto do veículo">
-//         <PhotoButton text="Retirar foto" icon={<FaCamera />} />
-//       </LargeButton>
-//       <br />
-//       <br />
-//       <br />
-//       <br />
-//       <br />
-//       <br />
-//       <br />
-//       <LargeButton
-//         label="Navegação"
-//         icon={<FaHome />}
-//         text="Voltar à tela inicial"
-//         onClick={() => handleNavigate("/")}
-//       />
-//     </>
-//   );
-// }
 import { useNavigate } from "react-router-dom";
 import { CodeButton, LargeButton, PhotoButton } from "./components/index";
 import { FaCamera, FaCopy, FaHome } from "react-icons/fa";
@@ -74,7 +35,7 @@ export default function Success() {
             <strong>Nome:</strong> {dados.nome}
           </p>
           <p>
-            <strong>RA:</strong> {dados.ra}
+            <strong>Telefone:</strong> {dados.telefone}
           </p>
           <p>
             <strong>Curso:</strong> {dados.curso}
@@ -84,6 +45,9 @@ export default function Success() {
           </p>
           <p>
             <strong>Veículo:</strong> {dados.veiculo}
+          </p>
+          <p>
+            <strong>Placa:</strong> {dados.placa}
           </p>
         </div>
       )}
