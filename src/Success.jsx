@@ -38,6 +38,9 @@ export default function Success() {
             <strong>Telefone:</strong> {dados.telefone}
           </p>
           <p>
+            <strong>Tipo:</strong> {dados.tipoParticipante}
+          </p>
+          <p>
             <strong>Curso:</strong> {dados.curso}
           </p>
           <p>

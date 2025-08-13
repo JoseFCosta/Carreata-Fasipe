@@ -13,6 +13,7 @@ export default function Form() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [tipoParticipante, setTipoParticipante] = useState("");
   const [curso, setCurso] = useState("");
   const [equipe, setEquipe] = useState("");
   const [veiculo, setVeiculo] = useState("");
@@ -66,7 +67,16 @@ export default function Form() {
   };
 
   const handleConfirm = () => {
-    const dados = { nome, telefone, curso, equipe, veiculo, placa, fotoBase64 };
+    const dados = {
+      nome,
+      telefone,
+      tipoParticipante,
+      curso,
+      equipe,
+      veiculo,
+      placa,
+      fotoBase64,
+    };
     localStorage.setItem("formData", JSON.stringify(dados));
     navigate("/success");
   };
@@ -85,6 +95,13 @@ export default function Form() {
         label="Telefone"
         placeholder="Ex: 65 9 0000-0000"
         onChange={(e) => setTelefone(e.target.value)}
+      />
+
+      <InputDropDown
+        label="Participante"
+        options={["Participante", "Convidado"]}
+        placeholder="Participante(aluno) ou convidado"
+        onChange={(e) => setTipoParticipante(e.target.value)}
       />
 
       <InputDropDown
