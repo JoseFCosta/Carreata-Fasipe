@@ -9,6 +9,7 @@ import {
 import { FaCamera } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { MdAlternateEmail } from "react-icons/md";
 
 export default function Form() {
   const navigate = useNavigate();
@@ -17,7 +18,9 @@ export default function Form() {
   const [curso, setCurso] = useState("");
   const [equipe, setEquipe] = useState("");
   const [placa, setPlaca] = useState("");
-  const [fotoFile, setFotoFile] = useState(null);
+
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoBase64, setPhotoBase64] = useState(null);
 
   const [cursos, setCursos] = useState([]);
   const [equipes, setEquipes] = useState([]);
@@ -28,6 +31,9 @@ export default function Form() {
   const [equipeLabel, setEquipeLabel] = useState([]);
   const [veiculoLabel, setVeiculoLabel] = useState([]);
   const [tipoParticipanteLabel, setTipoParticipanteLabel] = useState([]);
+
+  const [cursoLoading, setCursoLoading] = useState("");
+  const [equipeLoading, setEquipeLoading] = useState("");
 
   const vehicleTypes = [
     { value: 1, label: "Bicicleta" },
@@ -61,12 +67,13 @@ export default function Form() {
   const plateMask = (value) => {
     return value
       .toUpperCase()
-      .replace(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/g, "")
+      .replace(/^[A-Z][0-9][A-Z0-9][0-9]$/g, "")
       .slice(0, 8)
       .trim();
   };
 
   useEffect(() => {
+    setCursoLoading("Carregando lista...");
     axios
       .get(
         "https://netcursos.inf.br/carreata/backend/public/index.php/api/cursos"
@@ -77,12 +84,14 @@ export default function Form() {
           label: c.NOME_CURSO,
         }));
         setCursos(lista);
+        setCursoLoading("");
       })
       .catch((err) => console.error("Erro ao carregar cursos:", err));
   }, []);
 
   useEffect(() => {
     if (!curso) return;
+    setEquipeLoading("Carregando lista...");
 
     axios
       .get(
@@ -94,12 +103,14 @@ export default function Form() {
           label: e.NOME_EQUIPE,
         }));
         setEquipes(lista);
+        setEquipeLoading("");
       })
       .catch((err) => console.error("Erro ao carregar equipes:", err));
   }, [curso]);
 
   const handlePhotoChange = (file, base64) => {
-    setFotoFile(file);
+    setPhotoFile(file);
+    setPhotoBase64(base64);
   };
 
   const handleConfirm = async () => {
@@ -112,7 +123,7 @@ export default function Form() {
     if (!curso) camposVazios.push("Curso");
     if (!equipe) camposVazios.push("Equipe");
     if (!veiculo) camposVazios.push("Veículo");
-    if (!fotoFile) camposVazios.push("Foto");
+    if (!photoFile && !photoBase64) camposVazios.push("Foto");
 
     if (
       veiculoLabel &&
@@ -158,11 +169,11 @@ export default function Form() {
       );
 
       const participanteId = participanteRes.data?.id;
-
-      if (fotoFile && participanteId) {
+      if (photoFile && participanteId) {
         const formData = new FormData();
-        formData.append("arquivo", fotoFile);
+        formData.append("arquivo", photoFile);
         formData.append("PARTICIPANTE_ID", participanteId);
+        setEquipes;
 
         await axios.post(
           "https://netcursos.inf.br/carreata/backend/public/index.php/api/midias",
@@ -216,6 +227,7 @@ export default function Form() {
           setCurso(option.value);
           setCursoLabel(option.label);
         }}
+        loading={cursoLoading}
       />
 
       <InputDropDown
@@ -226,6 +238,7 @@ export default function Form() {
           setEquipe(option.value);
           setEquipeLabel(option.label);
         }}
+        loading={equipeLoading}
       />
 
       <InputDropDown
@@ -258,9 +271,8 @@ export default function Form() {
           onPhotoChange={handlePhotoChange}
         />
       </LargeButton>
+      <br />
 
-      <br />
-      <br />
       <div className="button-container">
         <Button isCancell={true} onClick={() => navigate("/")}>
           Cancelar

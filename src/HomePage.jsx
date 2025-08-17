@@ -6,10 +6,9 @@ import { FaCar, FaPen, FaList, FaRoute, FaClock } from "react-icons/fa";
 export default function HomePage() {
   return (
     <>
-      <h3 style={{ marginBlockEnd: "0px" }}>Página Inicial</h3>
-      <p style={{ color: "#B53333", marginBlockEnd: "0px" }}>
-        A lista que será preenchida NÃO é a presença
-      </p>
+      <h3 style={{ marginBlockEnd: "0px" }}>
+        Sistema para registro de veículos
+      </h3>
       <div className="grid-container">
         <Link to="/form" style={{ textDecoration: "none" }}>
           <SquareButton label="Registro de veículos" Icon={FaCar} />
@@ -18,6 +17,15 @@ export default function HomePage() {
         <SquareButton label="Em breve" Icon={FaRoute} disabled={true} />
         <SquareButton label="Em breve" Icon={FaClock} disabled={true} />
       </div>
+      <p
+        style={{
+          color: "#B53333",
+          maxWidth: "100%",
+          padding: "0 16px",
+        }}
+      >
+        Este sistema não substitui a lista de chamada
+      </p>
     </>
   );
 }

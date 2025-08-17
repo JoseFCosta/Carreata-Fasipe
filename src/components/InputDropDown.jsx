@@ -6,6 +6,7 @@ const InputDropDown = ({
   label,
   onChange,
   isRequired = true,
+  loading = null,
   errorMessage = "Campo obrigatório",
 }) => {
   const [error, setError] = useState("");
@@ -32,24 +33,33 @@ const InputDropDown = ({
       });
     }
 
-    if (isRequired && selectedValue) setError(""); // limpa erro se algo válido for selecionado
+    if (isRequired && selectedValue) setError("");
   };
 
   return (
     <div className="input-container">
       {label && <label className="label">{label}</label>}
+
       <select
         className={`input ${error ? "input-error" : ""}`}
+        disabled={loading}
         onChange={handleChange}
         onBlur={handleBlur}
       >
-        <option value="">{placeholder}</option>
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {loading ? (
+          <option value="">Carregando Itens...</option>
+        ) : (
+          <>
+            <option value="">{placeholder}</option>
+            {options.map((option, index) => (
+              <option key={index} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
       </select>
+
       {error && <span className="error-text">{error}</span>}
     </div>
   );

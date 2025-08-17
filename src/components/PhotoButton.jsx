@@ -2,18 +2,11 @@ import Button from "./Button";
 import { useState, useRef, useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 
-const PhotoButton = ({
-  text,
-  icon,
-  onPhotoChange,
-  isRequired = false,
-  triggerValidation = false,
-}) => {
+const PhotoButton = ({ text, icon, onPhotoChange }) => {
   const [photoTaken, setPhotoTaken] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -23,13 +16,6 @@ const PhotoButton = ({
       setPhotoTaken(true);
     }
   }, []);
-
-  // Sempre que o form pedir validação, checa se está vazio
-  useEffect(() => {
-    if (isRequired && triggerValidation && !photoTaken) {
-      setError("Foto é obrigatória");
-    }
-  }, [triggerValidation, isRequired, photoTaken]);
 
   const handleClick = () => {
     if (photoTaken) {
@@ -41,18 +27,32 @@ const PhotoButton = ({
 
   const handlePhotoCapture = (event) => {
     const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const base64Data = reader.result;
+      setPhotoUrl(base64Data);
+      setPhotoTaken(true);
+      localStorage.setItem("capturedPhoto", base64Data);
+
+      // sempre recria um File válido a partir do base64
+      const arr = base64Data.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) u8arr[n] = bstr.charCodeAt(n);
+
+      const finalFile = new File([u8arr], "captured_photo.jpg", { type: mime });
+
+      if (onPhotoChange) onPhotoChange(finalFile, base64Data);
+    };
+
     if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Data = reader.result;
-        setPhotoUrl(base64Data);
-        setPhotoTaken(true);
-        setError(""); // remove erro se foto for tirada
-        localStorage.setItem("capturedPhoto", base64Data);
-        if (onPhotoChange) onPhotoChange(file, base64Data);
-      };
       reader.readAsDataURL(file);
+    } else {
+      alert("Erro ao capturar foto no dispositivo. Tente novamente.");
+      if (onPhotoChange) onPhotoChange(null, null);
     }
   };
 
@@ -63,16 +63,11 @@ const PhotoButton = ({
     localStorage.removeItem("capturedPhoto");
     setShowPhotoModal(false);
     if (onPhotoChange) onPhotoChange(null, null);
-    if (isRequired) setError("Foto é obrigatória");
   };
 
   return (
     <div className="photo-button-container">
-      <button
-        className={`large-button ${error ? "input-error" : ""}`}
-        type="button"
-        onClick={handleClick}
-      >
+      <button className="large-button" type="button" onClick={handleClick}>
         {icon && !photoTaken && (
           <span className="large-button-icon">{icon}</span>
         )}
@@ -94,8 +89,6 @@ const PhotoButton = ({
         style={{ display: "none" }}
         onChange={handlePhotoCapture}
       />
-
-      {error && <span className="error-text">{error}</span>}
 
       {showPhotoModal && (
         <div className="photo-modal-overlay">
