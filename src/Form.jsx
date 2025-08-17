@@ -14,16 +14,20 @@ export default function Form() {
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [tipoParticipante, setTipoParticipante] = useState("");
   const [curso, setCurso] = useState("");
   const [equipe, setEquipe] = useState("");
-  const [veiculo, setVeiculo] = useState("");
   const [placa, setPlaca] = useState("");
   const [fotoFile, setFotoFile] = useState(null);
 
   const [cursos, setCursos] = useState([]);
   const [equipes, setEquipes] = useState([]);
-  const [validatePhoto, setValidatePhoto] = useState(false);
+  const [veiculo, setVeiculo] = useState([]);
+
+  const [tipoParticipante, setTipoParticipante] = useState([]);
+  const [cursoLabel, setCursoLabel] = useState([]);
+  const [equipeLabel, setEquipeLabel] = useState([]);
+  const [veiculoLabel, setVeiculoLabel] = useState([]);
+  const [tipoParticipanteLabel, setTipoParticipanteLabel] = useState([]);
 
   const vehicleTypes = [
     { value: 1, label: "Bicicleta" },
@@ -32,6 +36,11 @@ export default function Form() {
     { value: 4, label: "Camionete" },
     { value: 5, label: "Van/Microônibus" },
     { value: 6, label: "Outros" },
+  ];
+
+  const tipo_Participante = [
+    { value: 1, label: "Aluno" },
+    { value: 2, label: "Convidado" },
   ];
 
   const nameMask = (value) => {
@@ -94,8 +103,6 @@ export default function Form() {
   };
 
   const handleConfirm = async () => {
-    setValidatePhoto(true);
-
     const camposVazios = [];
 
     if (!nome) camposVazios.push("Nome");
@@ -106,6 +113,15 @@ export default function Form() {
     if (!equipe) camposVazios.push("Equipe");
     if (!veiculo) camposVazios.push("Veículo");
     if (!fotoFile) camposVazios.push("Foto");
+
+    if (
+      veiculoLabel &&
+      veiculoLabel !== "Bicicleta" &&
+      veiculoLabel !== "Outros" &&
+      !placa
+    ) {
+      camposVazios.push("Placa");
+    }
 
     if (camposVazios.length > 0) {
       alert(
@@ -118,10 +134,10 @@ export default function Form() {
     const formData = {
       nome,
       telefone,
-      tipoParticipante,
-      curso,
-      equipe,
-      veiculo,
+      tipoParticipante: tipoParticipanteLabel,
+      curso: cursoLabel,
+      equipe: equipeLabel,
+      veiculo: veiculoLabel,
       placa,
     };
     localStorage.setItem("formData", JSON.stringify(formData));
@@ -184,34 +200,42 @@ export default function Form() {
 
       <InputDropDown
         label="Participante"
-        options={[
-          { value: 1, label: "Participante" },
-          { value: 2, label: "Convidado" },
-        ]}
+        options={tipo_Participante}
         placeholder="Participante(aluno) ou convidado"
-        onChange={(e) => setTipoParticipante(e.target.value)}
+        onChange={(option) => {
+          setTipoParticipante(option.value);
+          setTipoParticipanteLabel(option.label);
+        }}
       />
 
       <InputDropDown
         label="Curso"
         options={cursos}
-        value={cursos}
         placeholder="Selecione seu curso"
-        onChange={(e) => setCurso(e.target.value)}
+        onChange={(option) => {
+          setCurso(option.value);
+          setCursoLabel(option.label);
+        }}
       />
 
       <InputDropDown
         label="Equipe"
         options={equipes}
         placeholder="Selecione sua equipe"
-        onChange={(e) => setEquipe(e.target.value)}
+        onChange={(option) => {
+          setEquipe(option.value);
+          setEquipeLabel(option.label);
+        }}
       />
 
       <InputDropDown
         label="Veiculo"
         options={vehicleTypes}
         placeholder="Selecione o seu tipo veiculo"
-        onChange={(e) => setVeiculo(e.target.value)}
+        onChange={(option) => {
+          setVeiculo(option.value);
+          setVeiculoLabel(option.label);
+        }}
       />
 
       <Input
