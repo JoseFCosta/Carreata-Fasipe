@@ -11,7 +11,7 @@ export default function HomePage() {
         A lista que será preenchida NÃO é a presença
       </p>
       <div className="grid-container">
-        <Link to="/form2" style={{ textDecoration: "none" }}>
+        <Link to="/form" style={{ textDecoration: "none" }}>
           <SquareButton label="Registro de veículos" Icon={FaCar} />
         </Link>
         <SquareButton label="Em breve" Icon={FaList} disabled={true} />

@@ -16,42 +16,38 @@ export default function Success() {
 
   return (
     <>
-      <h3>Registro salvo com sucesso!</h3>
+      <h2>Registro salvo com sucesso!</h2>
 
+      <label className="label">Registros armazenados</label>
       {dados && (
         <div className="dataForm">
-          <p>
-            <strong>Nome:</strong> {dados.nome}
-          </p>
-          <p>
-            <strong>Telefone:</strong> {dados.telefone}
-          </p>
-          <p>
-            <strong>Tipo:</strong> {dados.tipoParticipante}
-          </p>
-          <p>
-            <strong>Curso:</strong> {dados.curso}
-          </p>
-          <p>
-            <strong>Equipe:</strong> {dados.equipe}
-          </p>
-          <p>
-            <strong>Veículo:</strong> {dados.veiculo}
-          </p>
-          <p>
-            <strong>Placa:</strong> {dados.placa}
-          </p>
+          {Object.entries(dados).map(([chave, valor]) => {
+            if (!valor) return null;
+
+            const rotulos = {
+              nome: "Nome",
+              telefone: "Telefone",
+              tipoParticipante: "Tipo",
+              curso: "Curso",
+              equipe: "Equipe",
+              veiculo: "Veículo",
+              placa: "Placa",
+            };
+
+            return (
+              <p key={chave}>
+                <strong>{rotulos[chave] || chave}:</strong> {valor}
+              </p>
+            );
+          })}
         </div>
       )}
 
       <br />
-
       <LargeButton label="Foto do veículo">
         <PhotoButton text="Visualizar foto" icon={<FaCamera />} />
       </LargeButton>
-
       <br />
-
       <LargeButton
         label="Navegação"
         icon={<FaHome />}
