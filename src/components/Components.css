@@ -201,12 +201,6 @@
   text-align: center;
 }
 
-.main-layout-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
 .main-layout-title {
   margin-top: 12px;
   font-size: 24px;
@@ -218,3 +212,28 @@
   flex: 1;
   padding: 16px;
 }
+
+
+/* .main-layout-image {
+  width: 100%;
+  height: auto;
+  max-width: 50%;
+  object-fit: contain;
+} */
+
+.main-layout-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  align-items: end;
+  gap: 16px;
+}
+
+
