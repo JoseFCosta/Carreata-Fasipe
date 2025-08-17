@@ -66,6 +66,19 @@
   background-color: white;
 }
 
+.input-error {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+
+.error-text {
+  text-align: left;
+  font-size: 0.8rem;
+  color: red;
+  margin-top: 4px;
+  display: block;
+}
+
 /* Button */
 
 .button {

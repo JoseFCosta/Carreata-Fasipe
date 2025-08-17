@@ -2,11 +2,18 @@ import Button from "./Button";
 import { useState, useRef, useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 
-const PhotoButton = ({ text, icon, onPhotoChange }) => {
+const PhotoButton = ({
+  text,
+  icon,
+  onPhotoChange,
+  isRequired = false,
+  triggerValidation = false,
+}) => {
   const [photoTaken, setPhotoTaken] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -16,6 +23,13 @@ const PhotoButton = ({ text, icon, onPhotoChange }) => {
       setPhotoTaken(true);
     }
   }, []);
+
+  // Sempre que o form pedir validação, checa se está vazio
+  useEffect(() => {
+    if (isRequired && triggerValidation && !photoTaken) {
+      setError("Foto é obrigatória");
+    }
+  }, [triggerValidation, isRequired, photoTaken]);
 
   const handleClick = () => {
     if (photoTaken) {
@@ -34,6 +48,7 @@ const PhotoButton = ({ text, icon, onPhotoChange }) => {
         const base64Data = reader.result;
         setPhotoUrl(base64Data);
         setPhotoTaken(true);
+        setError(""); // remove erro se foto for tirada
         localStorage.setItem("capturedPhoto", base64Data);
         if (onPhotoChange) onPhotoChange(file, base64Data);
       };
@@ -48,11 +63,16 @@ const PhotoButton = ({ text, icon, onPhotoChange }) => {
     localStorage.removeItem("capturedPhoto");
     setShowPhotoModal(false);
     if (onPhotoChange) onPhotoChange(null, null);
+    if (isRequired) setError("Foto é obrigatória");
   };
 
   return (
-    <>
-      <button className="large-button" type="button" onClick={handleClick}>
+    <div className="photo-button-container">
+      <button
+        className={`large-button ${error ? "input-error" : ""}`}
+        type="button"
+        onClick={handleClick}
+      >
         {icon && !photoTaken && (
           <span className="large-button-icon">{icon}</span>
         )}
@@ -75,6 +95,8 @@ const PhotoButton = ({ text, icon, onPhotoChange }) => {
         onChange={handlePhotoCapture}
       />
 
+      {error && <span className="error-text">{error}</span>}
+
       {showPhotoModal && (
         <div className="photo-modal-overlay">
           <div className="photo-modal">
@@ -88,7 +110,7 @@ const PhotoButton = ({ text, icon, onPhotoChange }) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

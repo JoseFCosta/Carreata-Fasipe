@@ -23,6 +23,7 @@ export default function Form2() {
 
   const [cursos, setCursos] = useState([]);
   const [equipes, setEquipes] = useState([]);
+  const [validatePhoto, setValidatePhoto] = useState(false);
 
   const vehicleTypes = [
     { value: 1, label: "Bicicleta" },
@@ -33,7 +34,25 @@ export default function Form2() {
     { value: 6, label: "Outros" },
   ];
 
-  // Carregar lista de cursos
+  const nameMask = (value) => {
+    return value.replace(/[^A-Za-zÀ-ÿ\s]/g, "").slice(0, 200);
+  };
+
+  const phoneMask = (value) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{1})?(\d{4})(\d{4}).*/, "$1 $2-$3")
+      .slice(0, 16);
+  };
+
+  const plateMask = (value) => {
+    return value
+      .toUpperCase()
+      .replace(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/g, "")
+      .slice(0, 8);
+  };
+
   useEffect(() => {
     axios
       .get(
@@ -49,7 +68,6 @@ export default function Form2() {
       .catch((err) => console.error("Erro ao carregar cursos:", err));
   }, []);
 
-  // Carregar lista de equipes quando curso mudar
   useEffect(() => {
     if (!curso) return;
 
@@ -72,8 +90,38 @@ export default function Form2() {
   };
 
   const handleConfirm = async () => {
+    setValidatePhoto(true);
+
+    const camposVazios = [];
+
+    if (!nome) camposVazios.push("Nome");
+    if (!telefone) camposVazios.push("Telefone");
+    if (!tipoParticipante) camposVazios.push("Tipo de Participante");
+    if (!curso) camposVazios.push("Curso");
+    if (!equipe) camposVazios.push("Equipe");
+    if (!veiculo) camposVazios.push("Veículo");
+    if (!fotoFile) camposVazios.push("Foto");
+
+    if (camposVazios.length > 0) {
+      alert(
+        "Os seguintes campos obrigatórios não foram preenchidos:\n- " +
+          camposVazios.join("\n- ")
+      );
+      return;
+    }
+
+    const formData = {
+      nome,
+      telefone,
+      tipoParticipante,
+      curso,
+      equipe,
+      veiculo,
+      placa,
+    };
+    localStorage.setItem("formData", JSON.stringify(formData));
+
     try {
-      // 1 - Envia participante
       const participanteRes = await axios.post(
         "https://netcursos.inf.br/carreata/backend/public/index.php/api/participantes",
         {
@@ -90,7 +138,6 @@ export default function Form2() {
 
       const participanteId = participanteRes.data?.id;
 
-      // 2 - Envia foto
       if (fotoFile && participanteId) {
         const formData = new FormData();
         formData.append("arquivo", fotoFile);
@@ -118,12 +165,18 @@ export default function Form2() {
         label="Nome Completo"
         placeholder="Ex: João Da Silva Neto"
         onChange={(e) => setNome(e.target.value)}
+        value={nome}
+        isRequired
+        mask={nameMask}
       />
 
       <Input
         label="Telefone"
-        placeholder="Ex: 65 9 0000-0000"
+        placeholder="Ex: (65) 9 0000-0000"
         onChange={(e) => setTelefone(e.target.value)}
+        value={telefone}
+        isRequired
+        mask={phoneMask}
       />
 
       <InputDropDown
@@ -134,13 +187,16 @@ export default function Form2() {
         ]}
         placeholder="Participante(aluno) ou convidado"
         onChange={(e) => setTipoParticipante(e.target.value)}
+        isRequired
       />
 
       <InputDropDown
         label="Curso"
         options={cursos}
+        value={cursos}
         placeholder="Selecione seu curso"
         onChange={(e) => setCurso(e.target.value)}
+        isRequired
       />
 
       <InputDropDown
@@ -148,6 +204,7 @@ export default function Form2() {
         options={equipes}
         placeholder="Selecione sua equipe"
         onChange={(e) => setEquipe(e.target.value)}
+        isRequired
       />
 
       <InputDropDown
@@ -155,13 +212,16 @@ export default function Form2() {
         options={vehicleTypes}
         placeholder="Selecione o seu tipo veiculo"
         onChange={(e) => setVeiculo(e.target.value)}
+        isRequired
       />
 
       <Input
-        label="Placa do veiculo"
+        label="Placa do veículo"
         placeholder="Ex: ABC1D23"
-        description="(Necessário apenas se o seu veiculo possuir)"
+        description="(Necessário apenas se o seu veículo possuir placa)"
         onChange={(e) => setPlaca(e.target.value)}
+        value={placa}
+        mask={plateMask}
       />
 
       <LargeButton
@@ -172,6 +232,7 @@ export default function Form2() {
           text="Retirar foto"
           icon={<FaCamera />}
           onPhotoChange={handlePhotoChange}
+          isRequired
         />
       </LargeButton>
 

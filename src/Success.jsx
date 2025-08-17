@@ -17,17 +17,6 @@ export default function Success() {
   return (
     <>
       <h3>Registro salvo com sucesso!</h3>
-      <LargeButton
-        label="Código de acesso"
-        description="Esse código comprova o seu registro. Caso haja qualquer contextação ele será levado em conta para autenticar sua presença"
-        isWarning={true}
-      >
-        <CodeButton
-          text="Copiar código"
-          icon={<FaCopy />}
-          code="KJGD9124JIOA-213U12AS"
-        />
-      </LargeButton>
 
       {dados && (
         <div className="dataForm">
